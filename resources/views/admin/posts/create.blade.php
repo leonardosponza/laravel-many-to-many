@@ -1,61 +1,74 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid">    
-    <div class="row app-height">
-        @include('partials.aside')
+    <div class="container">
         
-        <div class="col-md-10 main-content">
-            @include('partials.usernav')
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>    
+        @endif
 
-            <div class="container-fluid current-container my-5">
-                <div class="current-page row justify-content-between">
-                    <div class="col-3">
-                        <div class="font-mid f-400">Crea un post</div>
-                    </div>
-                </div>
+        <form action="{{ route('admin.posts.store') }}" method="post">
+            @csrf
+            <div class="mb-3">
+                <label for="titolo" class="form-label">Titolo</label>
+                <input type="text" class="form-control
+                @error('title')
+                    is-invalid                    
+                @enderror" id="titolo" name="title" value="{{ old('title')}}">
+                @error('title')
+                    <div class="alert alert-danger">{{ $message }} </div>                    
+                @enderror                                             
             </div>
 
+            <div class="mb-3">
+                <label for="titolo" class="form-label">Categoria</label>
+                <select name="category_id" id="category">
+                    <option value="">-- Seleziona una categoria --</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}"
+                            @if ($category->id == old('$category_id'))
+                                selected
+                            @endif
+                            > {{ $category->name }}</option>
+                    @endforeach
+                </select>
+                                                           
+            </div>
+
+            <div class="mb-3">
+                <label for="desc" class="form-label">Descrizione</label>
+                <textarea class="form-control
+                @error('content')
+                    is-invalid                    
+                @enderror" name="content" id="desc" cols="30" rows="10">{{ old('content')}}</textarea>
+                @error('content')
+                    <div class="alert alert-danger">{{ $message }} </div>                    
+                @enderror
+            </div>   
             
-            <div class="container-fluid records-container-fluid">
-                <form action="{{ route('admin.posts.store') }}" method="post">
-                    @csrf
-
-                    <div class="form-container">
-                        <div class="mb-5">
-                            <label for="category" class="form-label">categoria</label>
-                            <select name="category_id" id="category" class="minimal-input form-control">
-                                <option value="">-- Seleziona una categoria --</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ old('category_id', $category->id) }}"
-                                        @if($category->id == old('category_id')) selected @endif>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-5">
-                            <label for="title" class="form-label">Titolo</label>
-                            <input class="minimal-input form-control edit-text @error('title') is-invalid @enderror" type="text" name="title" id="title" value="{{ old('title') }}">
-                            @error('title')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-5">
-                            <label for="content" class="form-label">Contenuto</label>
-                            <textarea rows="7" class="minimal-input form-control edit-text @error('content') is-invalid @enderror" name="content" id="content">{{ old('content') }}</textarea>
-                            @error('content')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <button type="submit" class="btn btn-login">Invia</button>
-                    </div>
-                </form>
+            <div>
+                <h4>Tag</h4>
+                    @foreach ($tags as $tag)
+                        <div class="d-inline-block  mx-1">
+                            <input id="tag{{ $loop->iteration }}" type="checkbox" value="{{ $tag->id }}" 
+                                @if (in_array($tag->id, old('tags', [])))
+                                    checked
+                                @endif
+                            name="tags[]">
+                            <label for="tag{{ $loop->iteration }}" class="form-label">{{ $tag->name }}</label>
+                        </div>                            
+                    @endforeach
             </div>
-        </div>
+                    
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        
     </div>
-</div>
+    
 @endsection
