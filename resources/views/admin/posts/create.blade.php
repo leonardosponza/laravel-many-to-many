@@ -6,11 +6,8 @@
         @include('partials.aside')
         
         <div class="col-md-10 main-content">
-            {{-- upper common navbar --}}
             @include('partials.usernav')
-            {{-- upper common navbar --}}
 
-            {{-- current page start --}}
             <div class="container-fluid current-container my-5">
                 <div class="current-page row justify-content-between">
                     <div class="col-3">
@@ -18,16 +15,15 @@
                     </div>
                 </div>
             </div>
-            {{-- current page end --}}
+
             
-            {{-- main content start --}}
             <div class="container-fluid records-container-fluid">
                 <form action="{{ route('admin.posts.store') }}" method="post">
                     @csrf
 
                     <div class="form-container">
                         <div class="mb-5">
-                            <label for="category" class="form-label">Tag</label>
+                            <label for="category" class="form-label">categoria</label>
                             <select name="category_id" id="category" class="minimal-input form-control">
                                 <option value="">-- Seleziona una categoria --</option>
                                 @foreach ($categories as $category)
@@ -59,7 +55,6 @@
                     </div>
                 </form>
             </div>
-            {{-- main content end --}}
         </div>
     </div>
 </div>
